@@ -46,6 +46,15 @@ function release() external {
 
         emit TokensReleased(unreleased);
     }
+function releasableAmount() public view returns (uint256) {
+        if (block.timestamp < cliff) {
+            return 0;
+        } else if (block.timestamp >= start.add(duration) || isVestingComplete()) {
+            return token.balanceOf(address(this));
+        } else {
+            return totalVestedAmount().mul(block.timestamp.sub(start)).div(duration).sub(released);
+        }
+    }
 
 }
 
