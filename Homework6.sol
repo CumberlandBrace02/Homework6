@@ -55,6 +55,12 @@ function releasableAmount() public view returns (uint256) {
             return totalVestedAmount().mul(block.timestamp.sub(start)).div(duration).sub(released);
         }
     }
+function totalVestedAmount() public view returns (uint256) {
+        return token.balanceOf(address(this)).add(released);
+    }
 
+    function isVestingComplete() public view returns (bool) {
+        return released >= token.balanceOf(address(this));
+    }
 }
 
