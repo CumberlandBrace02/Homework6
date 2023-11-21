@@ -33,5 +33,19 @@ contract TokenVesting is Ownable {
         cliff = _start.add(_cliffDuration);
         duration = _duration;
     }
+function release() external {
+        require(block.timestamp >= cliff, "Tokens are still in cliff period");
+        require(block.timestamp >= start, "Vesting has not started");
+        require(!isVestingComplete(), "Vesting is already complete");
 
+        uint256 unreleased = releasableAmount();
+        require(unreleased > 0, "No tokens to release");
+
+        released = released.add(unreleased);
+        token.transfer(beneficiary, unreleased);
+
+        emit TokensReleased(unreleased);
+    }
+
+}
 
